@@ -12,4 +12,27 @@ export const defaultLinks: SidebarLink[] = [
   { href: "/settings", title: "Settings", icon: Cog },
 ];
 
-export const additionalLinks: AdditionalLinks[] = [];
+export const additionalLinks: AdditionalLinks[] = [
+  {
+    title: "Entities",
+    links: [
+      {
+        href: "/chapters",
+        title: "Chapters",
+        icon: Globe,
+      },
+      {
+        href: "/lessons",
+        title: "Lessons",
+        icon: Globe,
+      },
+      {
+        href: "/courses",
+        title: "Courses",
+        icon: Globe,
+      },
+    ],
+  },
+
+];
+
