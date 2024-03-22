@@ -217,8 +217,7 @@ const ChapterContentForm = ({
             <SelectContent>
               {chapters?.map((chapter) => (
                 <SelectItem key={chapter.id} value={chapter.id.toString()}>
-                  {chapter.id}
-                  {/* TODO: Replace with a field from the chapter model */}
+                  {chapter.title}
                 </SelectItem>
               ))}
             </SelectContent>

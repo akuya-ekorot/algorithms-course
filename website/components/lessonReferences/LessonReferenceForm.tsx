@@ -196,8 +196,7 @@ const LessonReferenceForm = ({
             <SelectContent>
               {lessons?.map((lesson) => (
                 <SelectItem key={lesson.id} value={lesson.id.toString()}>
-                  {lesson.id}
-                  {/* TODO: Replace with a field from the lesson model */}
+                  {lesson.title}
                 </SelectItem>
               ))}
             </SelectContent>
