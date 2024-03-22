@@ -14,32 +14,22 @@ import { type getLessonObjectives } from '@/lib/api/lessonObjectives/queries';
 
 import { nanoid, timestamps } from '@/lib/utils';
 
-export const lessonObjectives = pgTable(
-  'lesson_objectives',
-  {
-    id: varchar('id', { length: 191 })
-      .primaryKey()
-      .$defaultFn(() => nanoid()),
-    objective: text('objective').notNull(),
-    rank: integer('rank').notNull(),
-    lessonId: varchar('lesson_id', { length: 256 })
-      .references(() => lessons.id, { onDelete: 'cascade' })
-      .notNull(),
-    createdAt: timestamp('created_at')
-      .notNull()
-      .default(sql`now()`),
-    updatedAt: timestamp('updated_at')
-      .notNull()
-      .default(sql`now()`),
-  },
-  (lessonObjectives) => {
-    return {
-      rankIndex: uniqueIndex('lesson_objectives_rank_idx').on(
-        lessonObjectives.rank,
-      ),
-    };
-  },
-);
+export const lessonObjectives = pgTable('lesson_objectives', {
+  id: varchar('id', { length: 191 })
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  objective: text('objective').notNull(),
+  rank: integer('rank').notNull(),
+  lessonId: varchar('lesson_id', { length: 256 })
+    .references(() => lessons.id, { onDelete: 'cascade' })
+    .notNull(),
+  createdAt: timestamp('created_at')
+    .notNull()
+    .default(sql`now()`),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .default(sql`now()`),
+});
 
 // Schema for lessonObjectives - used to validate API requests
 const baseSchema = createSelectSchema(lessonObjectives).omit(timestamps);

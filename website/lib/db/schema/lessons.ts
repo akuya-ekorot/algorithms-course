@@ -13,31 +13,23 @@ import { type getLessons } from '@/lib/api/lessons/queries';
 
 import { nanoid, timestamps } from '@/lib/utils';
 
-export const lessons = pgTable(
-  'lessons',
-  {
-    id: varchar('id', { length: 191 })
-      .primaryKey()
-      .$defaultFn(() => nanoid()),
-    title: text('title').notNull(),
-    description: text('description').notNull(),
-    rank: text('rank').notNull(),
-    courseId: varchar('course_id', { length: 256 })
-      .references(() => courses.id, { onDelete: 'cascade' })
-      .notNull(),
-    createdAt: timestamp('created_at')
-      .notNull()
-      .default(sql`now()`),
-    updatedAt: timestamp('updated_at')
-      .notNull()
-      .default(sql`now()`),
-  },
-  (lessons) => {
-    return {
-      rankIndex: uniqueIndex('lessons_rank_idx').on(lessons.rank),
-    };
-  },
-);
+export const lessons = pgTable('lessons', {
+  id: varchar('id', { length: 191 })
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  rank: text('rank').notNull(),
+  courseId: varchar('course_id', { length: 256 })
+    .references(() => courses.id, { onDelete: 'cascade' })
+    .notNull(),
+  createdAt: timestamp('created_at')
+    .notNull()
+    .default(sql`now()`),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .default(sql`now()`),
+});
 
 // Schema for lessons - used to validate API requests
 const baseSchema = createSelectSchema(lessons).omit(timestamps);
