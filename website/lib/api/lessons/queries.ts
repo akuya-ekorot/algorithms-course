@@ -20,7 +20,9 @@ export const getLessons = async () => {
   const rows = await db
     .select({ lesson: lessons, course: courses })
     .from(lessons)
-    .leftJoin(courses, eq(lessons.courseId, courses.id));
+    .leftJoin(courses, eq(lessons.courseId, courses.id))
+    .orderBy(lessons.rank);
+
   const l = rows.map((r) => ({ ...r.lesson, course: r.course }));
   return { lessons: l };
 };
@@ -51,15 +53,20 @@ export const getLessonByIdWithLessonObjectivesAndLessonReferencesAndChapters =
       .where(eq(lessons.id, lessonId))
       .leftJoin(lessonObjectives, eq(lessons.id, lessonObjectives.lessonId))
       .leftJoin(lessonReferences, eq(lessons.id, lessonReferences.lessonId))
-      .leftJoin(chapters, eq(lessons.id, chapters.lessonId));
+      .leftJoin(chapters, eq(lessons.id, chapters.lessonId))
+      .orderBy(lessons.rank);
+
     if (rows.length === 0) return {};
     const l = rows[0].lesson;
+
     const lo = rows
       .filter((r) => r.lessonObjective !== null)
       .map((l) => l.lessonObjective) as CompleteLessonObjective[];
+
     const lr = rows
       .filter((r) => r.lessonReference !== null)
       .map((l) => l.lessonReference) as CompleteLessonReference[];
+
     const lc = rows
       .filter((r) => r.chapter !== null)
       .map((c) => c.chapter) as CompleteChapter[];

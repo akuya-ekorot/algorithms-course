@@ -12,7 +12,14 @@ export const getCourseObjectives = async () => {
     .select({ courseObjective: courseObjectives, course: courses })
     .from(courseObjectives)
     .leftJoin(courses, eq(courseObjectives.courseId, courses.id));
-  const c = rows.map((r) => ({ ...r.courseObjective, course: r.course }));
+
+  const c = rows
+    .filter((r) => r.course !== null)
+    .filter(
+      (r, i, a) => a.findIndex((t) => t.course!.id === r.course!.id) === i,
+    )
+    .map((r) => ({ ...r.courseObjective, course: r.course }));
+
   return { courseObjectives: c };
 };
 

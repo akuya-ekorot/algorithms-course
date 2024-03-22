@@ -41,11 +41,21 @@ export const getCourseByIdWithCourseObjectivesAndLessons = async (
     .leftJoin(lessons, eq(courses.id, lessons.courseId));
   if (rows.length === 0) return {};
   const c = rows[0].course;
+
   const cc = rows
     .filter((r) => r.courseObjective !== null)
+    .filter(
+      (r, i, a) =>
+        a.findIndex((t) => t.courseObjective!.id === r.courseObjective!.id) ===
+        i,
+    )
     .map((c) => c.courseObjective) as CompleteCourseObjective[];
+
   const cl = rows
     .filter((r) => r.lesson !== null)
+    .filter(
+      (r, i, a) => a.findIndex((t) => t.lesson!.id === r.lesson!.id) === i,
+    )
     .map((l) => l.lesson) as CompleteLesson[];
 
   return { course: c, courseObjectives: cc, lessons: cl };
