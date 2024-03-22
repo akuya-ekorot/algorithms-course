@@ -1,38 +1,42 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { cn } from "@/lib/utils";
-import { type CourseObjective, CompleteCourseObjective } from "@/lib/db/schema/courseObjectives";
-import Modal from "@/components/shared/Modal";
-import { type Course, type CourseId } from "@/lib/db/schema/courses";
-import { useOptimisticCourseObjectives } from "@/app/(app)/course-objectives/useOptimisticCourseObjectives";
-import { Button } from "@/components/ui/button";
-import CourseObjectiveForm from "./CourseObjectiveForm";
-import { PlusIcon } from "lucide-react";
+import { cn } from '@/lib/utils';
+import {
+  type CourseObjective,
+  CompleteCourseObjective,
+} from '@/lib/db/schema/courseObjectives';
+import Modal from '@/components/shared/Modal';
+import { type Course, type CourseId } from '@/lib/db/schema/courses';
+import { useOptimisticCourseObjectives } from '@/app/(app)/course-objectives/useOptimisticCourseObjectives';
+import { Button } from '@/components/ui/button';
+import CourseObjectiveForm from './CourseObjectiveForm';
+import { PlusIcon } from 'lucide-react';
 
 type TOpenModal = (courseObjective?: CourseObjective) => void;
 
 export default function CourseObjectiveList({
   courseObjectives,
   courses,
-  courseId 
+  courseId,
 }: {
   courseObjectives: CompleteCourseObjective[];
   courses: Course[];
-  courseId?: CourseId 
+  courseId?: CourseId;
 }) {
-  const { optimisticCourseObjectives, addOptimisticCourseObjective } = useOptimisticCourseObjectives(
-    courseObjectives,
-    courses 
-  );
+  const { optimisticCourseObjectives, addOptimisticCourseObjective } =
+    useOptimisticCourseObjectives(courseObjectives, courses);
   const [open, setOpen] = useState(false);
-  const [activeCourseObjective, setActiveCourseObjective] = useState<CourseObjective | null>(null);
+  const [activeCourseObjective, setActiveCourseObjective] =
+    useState<CourseObjective | null>(null);
   const openModal = (courseObjective?: CourseObjective) => {
     setOpen(true);
-    courseObjective ? setActiveCourseObjective(courseObjective) : setActiveCourseObjective(null);
+    courseObjective
+      ? setActiveCourseObjective(courseObjective)
+      : setActiveCourseObjective(null);
   };
   const closeModal = () => setOpen(false);
 
@@ -41,7 +45,11 @@ export default function CourseObjectiveList({
       <Modal
         open={open}
         setOpen={setOpen}
-        title={activeCourseObjective ? "Edit CourseObjective" : "Create Course Objective"}
+        title={
+          activeCourseObjective
+            ? 'Edit CourseObjective'
+            : 'Create Course Objective'
+        }
       >
         <CourseObjectiveForm
           courseObjective={activeCourseObjective}
@@ -49,11 +57,11 @@ export default function CourseObjectiveList({
           openModal={openModal}
           closeModal={closeModal}
           courses={courses}
-        courseId={courseId}
+          courseId={courseId}
         />
       </Modal>
       <div className="absolute right-0 top-0 ">
-        <Button onClick={() => openModal()} variant={"outline"}>
+        <Button onClick={() => openModal()} variant={'outline'}>
           +
         </Button>
       </div>
@@ -81,30 +89,27 @@ const CourseObjective = ({
   courseObjective: CompleteCourseObjective;
   openModal: TOpenModal;
 }) => {
-  const optimistic = courseObjective.id === "optimistic";
-  const deleting = courseObjective.id === "delete";
+  const optimistic = courseObjective.id === 'optimistic';
+  const deleting = courseObjective.id === 'delete';
   const mutating = optimistic || deleting;
   const pathname = usePathname();
-  const basePath = pathname.includes("course-objectives")
+  const basePath = pathname.includes('course-objectives')
     ? pathname
-    : pathname + "/course-objectives/";
-
+    : pathname + '/course-objectives/';
 
   return (
     <li
       className={cn(
-        "flex justify-between my-2",
-        mutating ? "opacity-30 animate-pulse" : "",
-        deleting ? "text-destructive" : "",
+        'flex justify-between my-2',
+        mutating ? 'opacity-30 animate-pulse' : '',
+        deleting ? 'text-destructive' : '',
       )}
     >
       <div className="w-full">
         <div>{courseObjective.objective}</div>
       </div>
-      <Button variant={"link"} asChild>
-        <Link href={ basePath + "/" + courseObjective.id }>
-          Edit
-        </Link>
+      <Button variant={'link'} asChild>
+        <Link href={basePath + '/' + courseObjective.id}>Edit</Link>
       </Button>
     </li>
   );
@@ -121,7 +126,8 @@ const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
       </p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Course Objectives </Button>
+          <PlusIcon className="h-4" /> New Course Objectives{' '}
+        </Button>
       </div>
     </div>
   );

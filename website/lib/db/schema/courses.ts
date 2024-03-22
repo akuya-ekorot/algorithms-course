@@ -1,23 +1,23 @@
-import { sql } from "drizzle-orm";
-import { text, varchar, timestamp, pgTable } from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
+import { sql } from 'drizzle-orm';
+import { text, varchar, timestamp, pgTable } from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
 
-import { type getCourses } from "@/lib/api/courses/queries";
+import { type getCourses } from '@/lib/api/courses/queries';
 
-import { nanoid, timestamps } from "@/lib/utils";
+import { nanoid, timestamps } from '@/lib/utils';
 
-export const courses = pgTable("courses", {
-  id: varchar("id", { length: 191 })
+export const courses = pgTable('courses', {
+  id: varchar('id', { length: 191 })
     .primaryKey()
     .$defaultFn(() => nanoid()),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  repoLink: text("repo_link").notNull(),
-  createdAt: timestamp("created_at")
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  repoLink: text('repo_link').notNull(),
+  createdAt: timestamp('created_at')
     .notNull()
     .default(sql`now()`),
-  updatedAt: timestamp("updated_at")
+  updatedAt: timestamp('updated_at')
     .notNull()
     .default(sql`now()`),
 });
@@ -39,9 +39,9 @@ export type Course = typeof courses.$inferSelect;
 export type NewCourse = z.infer<typeof insertCourseSchema>;
 export type NewCourseParams = z.infer<typeof insertCourseParams>;
 export type UpdateCourseParams = z.infer<typeof updateCourseParams>;
-export type CourseId = z.infer<typeof courseIdSchema>["id"];
+export type CourseId = z.infer<typeof courseIdSchema>['id'];
 
 // this type infers the return from getCourses() - meaning it will include any joins
 export type CompleteCourse = Awaited<
   ReturnType<typeof getCourses>
->["courses"][number];
+>['courses'][number];

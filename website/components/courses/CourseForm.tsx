@@ -1,31 +1,27 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import { useState, useTransition } from "react";
-import { useFormStatus } from "react-dom";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
+import { useState, useTransition } from 'react';
+import { useFormStatus } from 'react-dom';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useValidatedForm } from '@/lib/hooks/useValidatedForm';
 
-import { type Action, cn } from "@/lib/utils";
-import { type TAddOptimistic } from "@/app/(app)/courses/useOptimisticCourses";
+import { type Action, cn } from '@/lib/utils';
+import { type TAddOptimistic } from '@/app/(app)/courses/useOptimisticCourses';
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { useBackPath } from "@/components/shared/BackButton";
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { useBackPath } from '@/components/shared/BackButton';
 
-
-
-import { type Course, insertCourseParams } from "@/lib/db/schema/courses";
+import { type Course, insertCourseParams } from '@/lib/db/schema/courses';
 import {
   createCourseAction,
   deleteCourseAction,
   updateCourseAction,
-} from "@/lib/actions/courses";
-
+} from '@/lib/actions/courses';
 
 const CourseForm = ({
-  
   course,
   openModal,
   closeModal,
@@ -33,7 +29,7 @@ const CourseForm = ({
   postSuccess,
 }: {
   course?: Course | null;
-  
+
   openModal?: (course?: Course) => void;
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
@@ -42,13 +38,12 @@ const CourseForm = ({
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Course>(insertCourseParams);
   const editing = !!course?.id;
-  
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
   const router = useRouter();
-  const backpath = useBackPath("courses");
-
+  const backpath = useBackPath('courses');
 
   const onSuccess = (
     action: Action,
@@ -58,13 +53,13 @@ const CourseForm = ({
     if (failed) {
       openModal && openModal(data?.values);
       toast.error(`Failed to ${action}`, {
-        description: data?.error ?? "Error",
+        description: data?.error ?? 'Error',
       });
     } else {
       router.refresh();
       postSuccess && postSuccess();
       toast.success(`Course ${action}d!`);
-      if (action === "delete") router.push(backpath);
+      if (action === 'delete') router.push(backpath);
     }
   };
 
@@ -72,7 +67,9 @@ const CourseForm = ({
     setErrors(null);
 
     const payload = Object.fromEntries(data.entries());
-    const courseParsed = await insertCourseParams.safeParseAsync({  ...payload });
+    const courseParsed = await insertCourseParams.safeParseAsync({
+      ...payload,
+    });
     if (!courseParsed.success) {
       setErrors(courseParsed?.error.flatten().fieldErrors);
       return;
@@ -83,26 +80,27 @@ const CourseForm = ({
     const pendingCourse: Course = {
       updatedAt: course?.updatedAt ?? new Date(),
       createdAt: course?.createdAt ?? new Date(),
-      id: course?.id ?? "",
+      id: course?.id ?? '',
       ...values,
     };
     try {
       startMutation(async () => {
-        addOptimistic && addOptimistic({
-          data: pendingCourse,
-          action: editing ? "update" : "create",
-        });
+        addOptimistic &&
+          addOptimistic({
+            data: pendingCourse,
+            action: editing ? 'update' : 'create',
+          });
 
         const error = editing
           ? await updateCourseAction({ ...values, id: course.id })
           : await createCourseAction(values);
 
         const errorFormatted = {
-          error: error ?? "Error",
-          values: pendingCourse 
+          error: error ?? 'Error',
+          values: pendingCourse,
         };
         onSuccess(
-          editing ? "update" : "create",
+          editing ? 'update' : 'create',
           error ? errorFormatted : undefined,
         );
       });
@@ -114,13 +112,13 @@ const CourseForm = ({
   };
 
   return (
-    <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
+    <form action={handleSubmit} onChange={handleChange} className={'space-y-8'}>
       {/* Schema fields start */}
-              <div>
+      <div>
         <Label
           className={cn(
-            "mb-2 inline-block",
-            errors?.title ? "text-destructive" : "",
+            'mb-2 inline-block',
+            errors?.title ? 'text-destructive' : '',
           )}
         >
           Title
@@ -128,8 +126,8 @@ const CourseForm = ({
         <Input
           type="text"
           name="title"
-          className={cn(errors?.title ? "ring ring-destructive" : "")}
-          defaultValue={course?.title ?? ""}
+          className={cn(errors?.title ? 'ring ring-destructive' : '')}
+          defaultValue={course?.title ?? ''}
         />
         {errors?.title ? (
           <p className="text-xs text-destructive mt-2">{errors.title[0]}</p>
@@ -137,11 +135,11 @@ const CourseForm = ({
           <div className="h-6" />
         )}
       </div>
-        <div>
+      <div>
         <Label
           className={cn(
-            "mb-2 inline-block",
-            errors?.description ? "text-destructive" : "",
+            'mb-2 inline-block',
+            errors?.description ? 'text-destructive' : '',
           )}
         >
           Description
@@ -149,20 +147,22 @@ const CourseForm = ({
         <Input
           type="text"
           name="description"
-          className={cn(errors?.description ? "ring ring-destructive" : "")}
-          defaultValue={course?.description ?? ""}
+          className={cn(errors?.description ? 'ring ring-destructive' : '')}
+          defaultValue={course?.description ?? ''}
         />
         {errors?.description ? (
-          <p className="text-xs text-destructive mt-2">{errors.description[0]}</p>
+          <p className="text-xs text-destructive mt-2">
+            {errors.description[0]}
+          </p>
         ) : (
           <div className="h-6" />
         )}
       </div>
-        <div>
+      <div>
         <Label
           className={cn(
-            "mb-2 inline-block",
-            errors?.repoLink ? "text-destructive" : "",
+            'mb-2 inline-block',
+            errors?.repoLink ? 'text-destructive' : '',
           )}
         >
           Repo Link
@@ -170,8 +170,8 @@ const CourseForm = ({
         <Input
           type="text"
           name="repoLink"
-          className={cn(errors?.repoLink ? "ring ring-destructive" : "")}
-          defaultValue={course?.repoLink ?? ""}
+          className={cn(errors?.repoLink ? 'ring ring-destructive' : '')}
+          defaultValue={course?.repoLink ?? ''}
         />
         {errors?.repoLink ? (
           <p className="text-xs text-destructive mt-2">{errors.repoLink[0]}</p>
@@ -189,24 +189,25 @@ const CourseForm = ({
         <Button
           type="button"
           disabled={isDeleting || pending || hasErrors}
-          variant={"destructive"}
+          variant={'destructive'}
           onClick={() => {
             setIsDeleting(true);
             closeModal && closeModal();
             startMutation(async () => {
-              addOptimistic && addOptimistic({ action: "delete", data: course });
+              addOptimistic &&
+                addOptimistic({ action: 'delete', data: course });
               const error = await deleteCourseAction(course.id);
               setIsDeleting(false);
               const errorFormatted = {
-                error: error ?? "Error",
+                error: error ?? 'Error',
                 values: course,
               };
 
-              onSuccess("delete", error ? errorFormatted : undefined);
+              onSuccess('delete', error ? errorFormatted : undefined);
             });
           }}
         >
-          Delet{isDeleting ? "ing..." : "e"}
+          Delet{isDeleting ? 'ing...' : 'e'}
         </Button>
       ) : null}
     </form>
@@ -233,8 +234,8 @@ const SaveButton = ({
       aria-disabled={isCreating || isUpdating || errors}
     >
       {editing
-        ? `Sav${isUpdating ? "ing..." : "e"}`
-        : `Creat${isCreating ? "ing..." : "e"}`}
+        ? `Sav${isUpdating ? 'ing...' : 'e'}`
+        : `Creat${isCreating ? 'ing...' : 'e'}`}
     </Button>
   );
 };

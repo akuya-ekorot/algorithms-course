@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from 'next/cache';
 import {
   createChapterContent,
   deleteChapterContent,
   updateChapterContent,
-} from "@/lib/api/chapterContents/mutations";
+} from '@/lib/api/chapterContents/mutations';
 import {
   ChapterContentId,
   NewChapterContentParams,
@@ -13,21 +13,23 @@ import {
   chapterContentIdSchema,
   insertChapterContentParams,
   updateChapterContentParams,
-} from "@/lib/db/schema/chapterContents";
+} from '@/lib/db/schema/chapterContents';
 
 const handleErrors = (e: unknown) => {
-  const errMsg = "Error, please try again.";
+  const errMsg = 'Error, please try again.';
   if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
-  if (e && typeof e === "object" && "error" in e) {
+  if (e && typeof e === 'object' && 'error' in e) {
     const errAsStr = e.error as string;
     return errAsStr.length > 0 ? errAsStr : errMsg;
   }
   return errMsg;
 };
 
-const revalidateChapterContents = () => revalidatePath("/chapter-contents");
+const revalidateChapterContents = () => revalidatePath('/chapter-contents');
 
-export const createChapterContentAction = async (input: NewChapterContentParams) => {
+export const createChapterContentAction = async (
+  input: NewChapterContentParams,
+) => {
   try {
     const payload = insertChapterContentParams.parse(input);
     await createChapterContent(payload);
@@ -37,7 +39,9 @@ export const createChapterContentAction = async (input: NewChapterContentParams)
   }
 };
 
-export const updateChapterContentAction = async (input: UpdateChapterContentParams) => {
+export const updateChapterContentAction = async (
+  input: UpdateChapterContentParams,
+) => {
   try {
     const payload = updateChapterContentParams.parse(input);
     await updateChapterContent(payload.id, payload);

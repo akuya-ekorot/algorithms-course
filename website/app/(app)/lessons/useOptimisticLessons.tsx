@@ -1,13 +1,13 @@
-import { type Course } from "@/lib/db/schema/courses";
-import { type Lesson, type CompleteLesson } from "@/lib/db/schema/lessons";
-import { OptimisticAction } from "@/lib/utils";
-import { useOptimistic } from "react";
+import { type Course } from '@/lib/db/schema/courses';
+import { type Lesson, type CompleteLesson } from '@/lib/db/schema/lessons';
+import { OptimisticAction } from '@/lib/utils';
+import { useOptimistic } from 'react';
 
 export type TAddOptimistic = (action: OptimisticAction<Lesson>) => void;
 
 export const useOptimisticLessons = (
   lessons: CompleteLesson[],
-  courses: Course[]
+  courses: Course[],
 ) => {
   const [optimisticLessons, addOptimisticLesson] = useOptimistic(
     lessons,
@@ -24,21 +24,21 @@ export const useOptimisticLessons = (
       const optimisticLesson = {
         ...data,
         course: optimisticCourse,
-        id: "optimistic",
+        id: 'optimistic',
       };
 
       switch (action.action) {
-        case "create":
+        case 'create':
           return currentState.length === 0
             ? [optimisticLesson]
             : [...currentState, optimisticLesson];
-        case "update":
+        case 'update':
           return currentState.map((item) =>
             item.id === data.id ? { ...item, ...optimisticLesson } : item,
           );
-        case "delete":
+        case 'delete':
           return currentState.map((item) =>
-            item.id === data.id ? { ...item, id: "delete" } : item,
+            item.id === data.id ? { ...item, id: 'delete' } : item,
           );
         default:
           return currentState;

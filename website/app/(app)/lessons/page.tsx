@@ -1,9 +1,9 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import Loading from "@/app/loading";
-import LessonList from "@/components/lessons/LessonList";
-import { getLessons } from "@/lib/api/lessons/queries";
-import { getCourses } from "@/lib/api/courses/queries";
+import Loading from '@/app/loading';
+import LessonList from '@/components/lessons/LessonList';
+import { getLessons } from '@/lib/api/lessons/queries';
+import { getCourses } from '@/lib/api/courses/queries';
 
 export const revalidate = 0;
 
@@ -21,7 +21,6 @@ export default async function LessonsPage() {
 }
 
 const Lessons = async () => {
-  
   const { lessons } = await getLessons();
   const { courses } = await getCourses();
   return (

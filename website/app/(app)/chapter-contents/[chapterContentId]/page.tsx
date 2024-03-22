@@ -1,13 +1,12 @@
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
 
-import { getChapterContentById } from "@/lib/api/chapterContents/queries";
-import { getChapters } from "@/lib/api/chapters/queries";import OptimisticChapterContent from "@/app/(app)/chapter-contents/[chapterContentId]/OptimisticChapterContent";
+import { getChapterContentById } from '@/lib/api/chapterContents/queries';
+import { getChapters } from '@/lib/api/chapters/queries';
+import OptimisticChapterContent from '@/app/(app)/chapter-contents/[chapterContentId]/OptimisticChapterContent';
 
-
-import { BackButton } from "@/components/shared/BackButton";
-import Loading from "@/app/loading";
-
+import { BackButton } from '@/components/shared/BackButton';
+import Loading from '@/app/loading';
 
 export const revalidate = 0;
 
@@ -16,7 +15,6 @@ export default async function ChapterContentPage({
 }: {
   params: { chapterContentId: string };
 }) {
-
   return (
     <main className="overflow-auto">
       <ChapterContent id={params.chapterContentId} />
@@ -25,7 +23,6 @@ export default async function ChapterContentPage({
 }
 
 const ChapterContent = async ({ id }: { id: string }) => {
-  
   const { chapterContent } = await getChapterContentById(id);
   const { chapters } = await getChapters();
 
@@ -34,7 +31,10 @@ const ChapterContent = async ({ id }: { id: string }) => {
     <Suspense fallback={<Loading />}>
       <div className="relative">
         <BackButton currentResource="chapter-contents" />
-        <OptimisticChapterContent chapterContent={chapterContent} chapters={chapters} />
+        <OptimisticChapterContent
+          chapterContent={chapterContent}
+          chapters={chapters}
+        />
       </div>
     </Suspense>
   );

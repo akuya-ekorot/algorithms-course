@@ -1,40 +1,40 @@
-import { sql } from "drizzle-orm";
+import { sql } from 'drizzle-orm';
 import {
   text,
   varchar,
   timestamp,
   pgTable,
   uniqueIndex,
-} from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
-import { courses } from "./courses";
-import { type getLessons } from "@/lib/api/lessons/queries";
+} from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
+import { courses } from './courses';
+import { type getLessons } from '@/lib/api/lessons/queries';
 
-import { nanoid, timestamps } from "@/lib/utils";
+import { nanoid, timestamps } from '@/lib/utils';
 
 export const lessons = pgTable(
-  "lessons",
+  'lessons',
   {
-    id: varchar("id", { length: 191 })
+    id: varchar('id', { length: 191 })
       .primaryKey()
       .$defaultFn(() => nanoid()),
-    title: text("title").notNull(),
-    description: text("description").notNull(),
-    rank: text("rank").notNull(),
-    courseId: varchar("course_id", { length: 256 })
-      .references(() => courses.id, { onDelete: "cascade" })
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    rank: text('rank').notNull(),
+    courseId: varchar('course_id', { length: 256 })
+      .references(() => courses.id, { onDelete: 'cascade' })
       .notNull(),
-    createdAt: timestamp("created_at")
+    createdAt: timestamp('created_at')
       .notNull()
       .default(sql`now()`),
-    updatedAt: timestamp("updated_at")
+    updatedAt: timestamp('updated_at')
       .notNull()
       .default(sql`now()`),
   },
   (lessons) => {
     return {
-      rankIndex: uniqueIndex("lessons_rank_idx").on(lessons.rank),
+      rankIndex: uniqueIndex('lessons_rank_idx').on(lessons.rank),
     };
   },
 );
@@ -62,9 +62,9 @@ export type Lesson = typeof lessons.$inferSelect;
 export type NewLesson = z.infer<typeof insertLessonSchema>;
 export type NewLessonParams = z.infer<typeof insertLessonParams>;
 export type UpdateLessonParams = z.infer<typeof updateLessonParams>;
-export type LessonId = z.infer<typeof lessonIdSchema>["id"];
+export type LessonId = z.infer<typeof lessonIdSchema>['id'];
 
 // this type infers the return from getLessons() - meaning it will include any joins
 export type CompleteLesson = Awaited<
   ReturnType<typeof getLessons>
->["lessons"][number];
+>['lessons'][number];

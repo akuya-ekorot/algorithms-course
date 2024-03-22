@@ -1,38 +1,42 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { cn } from "@/lib/utils";
-import { type ChapterContent, CompleteChapterContent } from "@/lib/db/schema/chapterContents";
-import Modal from "@/components/shared/Modal";
-import { type Chapter, type ChapterId } from "@/lib/db/schema/chapters";
-import { useOptimisticChapterContents } from "@/app/(app)/chapter-contents/useOptimisticChapterContents";
-import { Button } from "@/components/ui/button";
-import ChapterContentForm from "./ChapterContentForm";
-import { PlusIcon } from "lucide-react";
+import { cn } from '@/lib/utils';
+import {
+  type ChapterContent,
+  CompleteChapterContent,
+} from '@/lib/db/schema/chapterContents';
+import Modal from '@/components/shared/Modal';
+import { type Chapter, type ChapterId } from '@/lib/db/schema/chapters';
+import { useOptimisticChapterContents } from '@/app/(app)/chapter-contents/useOptimisticChapterContents';
+import { Button } from '@/components/ui/button';
+import ChapterContentForm from './ChapterContentForm';
+import { PlusIcon } from 'lucide-react';
 
 type TOpenModal = (chapterContent?: ChapterContent) => void;
 
 export default function ChapterContentList({
   chapterContents,
   chapters,
-  chapterId 
+  chapterId,
 }: {
   chapterContents: CompleteChapterContent[];
   chapters: Chapter[];
-  chapterId?: ChapterId 
+  chapterId?: ChapterId;
 }) {
-  const { optimisticChapterContents, addOptimisticChapterContent } = useOptimisticChapterContents(
-    chapterContents,
-    chapters 
-  );
+  const { optimisticChapterContents, addOptimisticChapterContent } =
+    useOptimisticChapterContents(chapterContents, chapters);
   const [open, setOpen] = useState(false);
-  const [activeChapterContent, setActiveChapterContent] = useState<ChapterContent | null>(null);
+  const [activeChapterContent, setActiveChapterContent] =
+    useState<ChapterContent | null>(null);
   const openModal = (chapterContent?: ChapterContent) => {
     setOpen(true);
-    chapterContent ? setActiveChapterContent(chapterContent) : setActiveChapterContent(null);
+    chapterContent
+      ? setActiveChapterContent(chapterContent)
+      : setActiveChapterContent(null);
   };
   const closeModal = () => setOpen(false);
 
@@ -41,7 +45,11 @@ export default function ChapterContentList({
       <Modal
         open={open}
         setOpen={setOpen}
-        title={activeChapterContent ? "Edit ChapterContent" : "Create Chapter Content"}
+        title={
+          activeChapterContent
+            ? 'Edit ChapterContent'
+            : 'Create Chapter Content'
+        }
       >
         <ChapterContentForm
           chapterContent={activeChapterContent}
@@ -49,11 +57,11 @@ export default function ChapterContentList({
           openModal={openModal}
           closeModal={closeModal}
           chapters={chapters}
-        chapterId={chapterId}
+          chapterId={chapterId}
         />
       </Modal>
       <div className="absolute right-0 top-0 ">
-        <Button onClick={() => openModal()} variant={"outline"}>
+        <Button onClick={() => openModal()} variant={'outline'}>
           +
         </Button>
       </div>
@@ -81,30 +89,27 @@ const ChapterContent = ({
   chapterContent: CompleteChapterContent;
   openModal: TOpenModal;
 }) => {
-  const optimistic = chapterContent.id === "optimistic";
-  const deleting = chapterContent.id === "delete";
+  const optimistic = chapterContent.id === 'optimistic';
+  const deleting = chapterContent.id === 'delete';
   const mutating = optimistic || deleting;
   const pathname = usePathname();
-  const basePath = pathname.includes("chapter-contents")
+  const basePath = pathname.includes('chapter-contents')
     ? pathname
-    : pathname + "/chapter-contents/";
-
+    : pathname + '/chapter-contents/';
 
   return (
     <li
       className={cn(
-        "flex justify-between my-2",
-        mutating ? "opacity-30 animate-pulse" : "",
-        deleting ? "text-destructive" : "",
+        'flex justify-between my-2',
+        mutating ? 'opacity-30 animate-pulse' : '',
+        deleting ? 'text-destructive' : '',
       )}
     >
       <div className="w-full">
         <div>{chapterContent.type}</div>
       </div>
-      <Button variant={"link"} asChild>
-        <Link href={ basePath + "/" + chapterContent.id }>
-          Edit
-        </Link>
+      <Button variant={'link'} asChild>
+        <Link href={basePath + '/' + chapterContent.id}>Edit</Link>
       </Button>
     </li>
   );
@@ -121,7 +126,8 @@ const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
       </p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Chapter Contents </Button>
+          <PlusIcon className="h-4" /> New Chapter Contents{' '}
+        </Button>
       </div>
     </div>
   );

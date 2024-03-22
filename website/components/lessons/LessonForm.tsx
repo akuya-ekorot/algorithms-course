@@ -1,19 +1,18 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import { useState, useTransition } from "react";
-import { useFormStatus } from "react-dom";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useValidatedForm } from "@/lib/hooks/useValidatedForm";
+import { useState, useTransition } from 'react';
+import { useFormStatus } from 'react-dom';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useValidatedForm } from '@/lib/hooks/useValidatedForm';
 
-import { type Action, cn } from "@/lib/utils";
-import { type TAddOptimistic } from "@/app/(app)/lessons/useOptimisticLessons";
+import { type Action, cn } from '@/lib/utils';
+import { type TAddOptimistic } from '@/app/(app)/lessons/useOptimisticLessons';
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { useBackPath } from "@/components/shared/BackButton";
-
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { useBackPath } from '@/components/shared/BackButton';
 
 import {
   Select,
@@ -21,15 +20,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
-import { type Lesson, insertLessonParams } from "@/lib/db/schema/lessons";
+import { type Lesson, insertLessonParams } from '@/lib/db/schema/lessons';
 import {
   createLessonAction,
   deleteLessonAction,
   updateLessonAction,
-} from "@/lib/actions/lessons";
-import { type Course, type CourseId } from "@/lib/db/schema/courses";
+} from '@/lib/actions/lessons';
+import { type Course, type CourseId } from '@/lib/db/schema/courses';
 
 const LessonForm = ({
   courses,
@@ -42,7 +41,7 @@ const LessonForm = ({
 }: {
   lesson?: Lesson | null;
   courses: Course[];
-  courseId?: CourseId
+  courseId?: CourseId;
   openModal?: (lesson?: Lesson) => void;
   closeModal?: () => void;
   addOptimistic?: TAddOptimistic;
@@ -51,13 +50,12 @@ const LessonForm = ({
   const { errors, hasErrors, setErrors, handleChange } =
     useValidatedForm<Lesson>(insertLessonParams);
   const editing = !!lesson?.id;
-  
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, startMutation] = useTransition();
 
   const router = useRouter();
-  const backpath = useBackPath("lessons");
-
+  const backpath = useBackPath('lessons');
 
   const onSuccess = (
     action: Action,
@@ -67,13 +65,13 @@ const LessonForm = ({
     if (failed) {
       openModal && openModal(data?.values);
       toast.error(`Failed to ${action}`, {
-        description: data?.error ?? "Error",
+        description: data?.error ?? 'Error',
       });
     } else {
       router.refresh();
       postSuccess && postSuccess();
       toast.success(`Lesson ${action}d!`);
-      if (action === "delete") router.push(backpath);
+      if (action === 'delete') router.push(backpath);
     }
   };
 
@@ -81,7 +79,10 @@ const LessonForm = ({
     setErrors(null);
 
     const payload = Object.fromEntries(data.entries());
-    const lessonParsed = await insertLessonParams.safeParseAsync({ courseId, ...payload });
+    const lessonParsed = await insertLessonParams.safeParseAsync({
+      courseId,
+      ...payload,
+    });
     if (!lessonParsed.success) {
       setErrors(lessonParsed?.error.flatten().fieldErrors);
       return;
@@ -92,26 +93,27 @@ const LessonForm = ({
     const pendingLesson: Lesson = {
       updatedAt: lesson?.updatedAt ?? new Date(),
       createdAt: lesson?.createdAt ?? new Date(),
-      id: lesson?.id ?? "",
+      id: lesson?.id ?? '',
       ...values,
     };
     try {
       startMutation(async () => {
-        addOptimistic && addOptimistic({
-          data: pendingLesson,
-          action: editing ? "update" : "create",
-        });
+        addOptimistic &&
+          addOptimistic({
+            data: pendingLesson,
+            action: editing ? 'update' : 'create',
+          });
 
         const error = editing
           ? await updateLessonAction({ ...values, id: lesson.id })
           : await createLessonAction(values);
 
         const errorFormatted = {
-          error: error ?? "Error",
-          values: pendingLesson 
+          error: error ?? 'Error',
+          values: pendingLesson,
         };
         onSuccess(
-          editing ? "update" : "create",
+          editing ? 'update' : 'create',
           error ? errorFormatted : undefined,
         );
       });
@@ -123,13 +125,13 @@ const LessonForm = ({
   };
 
   return (
-    <form action={handleSubmit} onChange={handleChange} className={"space-y-8"}>
+    <form action={handleSubmit} onChange={handleChange} className={'space-y-8'}>
       {/* Schema fields start */}
-              <div>
+      <div>
         <Label
           className={cn(
-            "mb-2 inline-block",
-            errors?.title ? "text-destructive" : "",
+            'mb-2 inline-block',
+            errors?.title ? 'text-destructive' : '',
           )}
         >
           Title
@@ -137,8 +139,8 @@ const LessonForm = ({
         <Input
           type="text"
           name="title"
-          className={cn(errors?.title ? "ring ring-destructive" : "")}
-          defaultValue={lesson?.title ?? ""}
+          className={cn(errors?.title ? 'ring ring-destructive' : '')}
+          defaultValue={lesson?.title ?? ''}
         />
         {errors?.title ? (
           <p className="text-xs text-destructive mt-2">{errors.title[0]}</p>
@@ -146,11 +148,11 @@ const LessonForm = ({
           <div className="h-6" />
         )}
       </div>
-        <div>
+      <div>
         <Label
           className={cn(
-            "mb-2 inline-block",
-            errors?.description ? "text-destructive" : "",
+            'mb-2 inline-block',
+            errors?.description ? 'text-destructive' : '',
           )}
         >
           Description
@@ -158,20 +160,22 @@ const LessonForm = ({
         <Input
           type="text"
           name="description"
-          className={cn(errors?.description ? "ring ring-destructive" : "")}
-          defaultValue={lesson?.description ?? ""}
+          className={cn(errors?.description ? 'ring ring-destructive' : '')}
+          defaultValue={lesson?.description ?? ''}
         />
         {errors?.description ? (
-          <p className="text-xs text-destructive mt-2">{errors.description[0]}</p>
+          <p className="text-xs text-destructive mt-2">
+            {errors.description[0]}
+          </p>
         ) : (
           <div className="h-6" />
         )}
       </div>
-        <div>
+      <div>
         <Label
           className={cn(
-            "mb-2 inline-block",
-            errors?.rank ? "text-destructive" : "",
+            'mb-2 inline-block',
+            errors?.rank ? 'text-destructive' : '',
           )}
         >
           Rank
@@ -179,8 +183,8 @@ const LessonForm = ({
         <Input
           type="text"
           name="rank"
-          className={cn(errors?.rank ? "ring ring-destructive" : "")}
-          defaultValue={lesson?.rank ?? ""}
+          className={cn(errors?.rank ? 'ring ring-destructive' : '')}
+          defaultValue={lesson?.rank ?? ''}
         />
         {errors?.rank ? (
           <p className="text-xs text-destructive mt-2">{errors.rank[0]}</p>
@@ -189,35 +193,40 @@ const LessonForm = ({
         )}
       </div>
 
-      {courseId ? null : <div>
-        <Label
-          className={cn(
-            "mb-2 inline-block",
-            errors?.courseId ? "text-destructive" : "",
-          )}
-        >
-          Course
-        </Label>
-        <Select defaultValue={lesson?.courseId} name="courseId">
-          <SelectTrigger
-            className={cn(errors?.courseId ? "ring ring-destructive" : "")}
+      {courseId ? null : (
+        <div>
+          <Label
+            className={cn(
+              'mb-2 inline-block',
+              errors?.courseId ? 'text-destructive' : '',
+            )}
           >
-            <SelectValue placeholder="Select a course" />
-          </SelectTrigger>
-          <SelectContent>
-          {courses?.map((course) => (
-            <SelectItem key={course.id} value={course.id.toString()}>
-              {course.id}{/* TODO: Replace with a field from the course model */}
-            </SelectItem>
-           ))}
-          </SelectContent>
-        </Select>
-        {errors?.courseId ? (
-          <p className="text-xs text-destructive mt-2">{errors.courseId[0]}</p>
-        ) : (
-          <div className="h-6" />
-        )}
-      </div> }
+            Course
+          </Label>
+          <Select defaultValue={lesson?.courseId} name="courseId">
+            <SelectTrigger
+              className={cn(errors?.courseId ? 'ring ring-destructive' : '')}
+            >
+              <SelectValue placeholder="Select a course" />
+            </SelectTrigger>
+            <SelectContent>
+              {courses?.map((course) => (
+                <SelectItem key={course.id} value={course.id.toString()}>
+                  {course.id}
+                  {/* TODO: Replace with a field from the course model */}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors?.courseId ? (
+            <p className="text-xs text-destructive mt-2">
+              {errors.courseId[0]}
+            </p>
+          ) : (
+            <div className="h-6" />
+          )}
+        </div>
+      )}
       {/* Schema fields end */}
 
       {/* Save Button */}
@@ -228,24 +237,25 @@ const LessonForm = ({
         <Button
           type="button"
           disabled={isDeleting || pending || hasErrors}
-          variant={"destructive"}
+          variant={'destructive'}
           onClick={() => {
             setIsDeleting(true);
             closeModal && closeModal();
             startMutation(async () => {
-              addOptimistic && addOptimistic({ action: "delete", data: lesson });
+              addOptimistic &&
+                addOptimistic({ action: 'delete', data: lesson });
               const error = await deleteLessonAction(lesson.id);
               setIsDeleting(false);
               const errorFormatted = {
-                error: error ?? "Error",
+                error: error ?? 'Error',
                 values: lesson,
               };
 
-              onSuccess("delete", error ? errorFormatted : undefined);
+              onSuccess('delete', error ? errorFormatted : undefined);
             });
           }}
         >
-          Delet{isDeleting ? "ing..." : "e"}
+          Delet{isDeleting ? 'ing...' : 'e'}
         </Button>
       ) : null}
     </form>
@@ -272,8 +282,8 @@ const SaveButton = ({
       aria-disabled={isCreating || isUpdating || errors}
     >
       {editing
-        ? `Sav${isUpdating ? "ing..." : "e"}`
-        : `Creat${isCreating ? "ing..." : "e"}`}
+        ? `Sav${isUpdating ? 'ing...' : 'e'}`
+        : `Creat${isCreating ? 'ing...' : 'e'}`}
     </Button>
   );
 };

@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql } from 'drizzle-orm';
 import {
   text,
   integer,
@@ -6,35 +6,35 @@ import {
   timestamp,
   pgTable,
   uniqueIndex,
-} from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
-import { courses } from "./courses";
-import { type getCourseObjectives } from "@/lib/api/courseObjectives/queries";
+} from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
+import { courses } from './courses';
+import { type getCourseObjectives } from '@/lib/api/courseObjectives/queries';
 
-import { nanoid, timestamps } from "@/lib/utils";
+import { nanoid, timestamps } from '@/lib/utils';
 
 export const courseObjectives = pgTable(
-  "course_objectives",
+  'course_objectives',
   {
-    id: varchar("id", { length: 191 })
+    id: varchar('id', { length: 191 })
       .primaryKey()
       .$defaultFn(() => nanoid()),
-    objective: text("objective").notNull(),
-    rank: integer("rank").notNull(),
-    courseId: varchar("course_id", { length: 256 })
-      .references(() => courses.id, { onDelete: "cascade" })
+    objective: text('objective').notNull(),
+    rank: integer('rank').notNull(),
+    courseId: varchar('course_id', { length: 256 })
+      .references(() => courses.id, { onDelete: 'cascade' })
       .notNull(),
-    createdAt: timestamp("created_at")
+    createdAt: timestamp('created_at')
       .notNull()
       .default(sql`now()`),
-    updatedAt: timestamp("updated_at")
+    updatedAt: timestamp('updated_at')
       .notNull()
       .default(sql`now()`),
   },
   (courseObjectives) => {
     return {
-      rankIndex: uniqueIndex("course_objectives_rank_idx").on(
+      rankIndex: uniqueIndex('course_objectives_rank_idx').on(
         courseObjectives.rank,
       ),
     };
@@ -71,9 +71,9 @@ export type NewCourseObjectiveParams = z.infer<
 export type UpdateCourseObjectiveParams = z.infer<
   typeof updateCourseObjectiveParams
 >;
-export type CourseObjectiveId = z.infer<typeof courseObjectiveIdSchema>["id"];
+export type CourseObjectiveId = z.infer<typeof courseObjectiveIdSchema>['id'];
 
 // this type infers the return from getCourseObjectives() - meaning it will include any joins
 export type CompleteCourseObjective = Awaited<
   ReturnType<typeof getCourseObjectives>
->["courseObjectives"][number];
+>['courseObjectives'][number];

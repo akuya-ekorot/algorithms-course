@@ -1,9 +1,9 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import Loading from "@/app/loading";
-import LessonObjectiveList from "@/components/lessonObjectives/LessonObjectiveList";
-import { getLessonObjectives } from "@/lib/api/lessonObjectives/queries";
-import { getLessons } from "@/lib/api/lessons/queries";
+import Loading from '@/app/loading';
+import LessonObjectiveList from '@/components/lessonObjectives/LessonObjectiveList';
+import { getLessonObjectives } from '@/lib/api/lessonObjectives/queries';
+import { getLessons } from '@/lib/api/lessons/queries';
 
 export const revalidate = 0;
 
@@ -21,12 +21,14 @@ export default async function LessonObjectivesPage() {
 }
 
 const LessonObjectives = async () => {
-  
   const { lessonObjectives } = await getLessonObjectives();
   const { lessons } = await getLessons();
   return (
     <Suspense fallback={<Loading />}>
-      <LessonObjectiveList lessonObjectives={lessonObjectives} lessons={lessons} />
+      <LessonObjectiveList
+        lessonObjectives={lessonObjectives}
+        lessons={lessons}
+      />
     </Suspense>
   );
 };

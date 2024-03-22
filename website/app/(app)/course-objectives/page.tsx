@@ -1,9 +1,9 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import Loading from "@/app/loading";
-import CourseObjectiveList from "@/components/courseObjectives/CourseObjectiveList";
-import { getCourseObjectives } from "@/lib/api/courseObjectives/queries";
-import { getCourses } from "@/lib/api/courses/queries";
+import Loading from '@/app/loading';
+import CourseObjectiveList from '@/components/courseObjectives/CourseObjectiveList';
+import { getCourseObjectives } from '@/lib/api/courseObjectives/queries';
+import { getCourses } from '@/lib/api/courses/queries';
 
 export const revalidate = 0;
 
@@ -21,12 +21,14 @@ export default async function CourseObjectivesPage() {
 }
 
 const CourseObjectives = async () => {
-  
   const { courseObjectives } = await getCourseObjectives();
   const { courses } = await getCourses();
   return (
     <Suspense fallback={<Loading />}>
-      <CourseObjectiveList courseObjectives={courseObjectives} courses={courses} />
+      <CourseObjectiveList
+        courseObjectives={courseObjectives}
+        courses={courses}
+      />
     </Suspense>
   );
 };

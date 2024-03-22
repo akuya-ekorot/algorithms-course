@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from 'next/cache';
 import {
   createCourseObjective,
   deleteCourseObjective,
   updateCourseObjective,
-} from "@/lib/api/courseObjectives/mutations";
+} from '@/lib/api/courseObjectives/mutations';
 import {
   CourseObjectiveId,
   NewCourseObjectiveParams,
@@ -13,21 +13,23 @@ import {
   courseObjectiveIdSchema,
   insertCourseObjectiveParams,
   updateCourseObjectiveParams,
-} from "@/lib/db/schema/courseObjectives";
+} from '@/lib/db/schema/courseObjectives';
 
 const handleErrors = (e: unknown) => {
-  const errMsg = "Error, please try again.";
+  const errMsg = 'Error, please try again.';
   if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
-  if (e && typeof e === "object" && "error" in e) {
+  if (e && typeof e === 'object' && 'error' in e) {
     const errAsStr = e.error as string;
     return errAsStr.length > 0 ? errAsStr : errMsg;
   }
   return errMsg;
 };
 
-const revalidateCourseObjectives = () => revalidatePath("/course-objectives");
+const revalidateCourseObjectives = () => revalidatePath('/course-objectives');
 
-export const createCourseObjectiveAction = async (input: NewCourseObjectiveParams) => {
+export const createCourseObjectiveAction = async (
+  input: NewCourseObjectiveParams,
+) => {
   try {
     const payload = insertCourseObjectiveParams.parse(input);
     await createCourseObjective(payload);
@@ -37,7 +39,9 @@ export const createCourseObjectiveAction = async (input: NewCourseObjectiveParam
   }
 };
 
-export const updateCourseObjectiveAction = async (input: UpdateCourseObjectiveParams) => {
+export const updateCourseObjectiveAction = async (
+  input: UpdateCourseObjectiveParams,
+) => {
   try {
     const payload = updateCourseObjectiveParams.parse(input);
     await updateCourseObjective(payload.id, payload);

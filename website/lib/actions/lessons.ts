@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from 'next/cache';
 import {
   createLesson,
   deleteLesson,
   updateLesson,
-} from "@/lib/api/lessons/mutations";
+} from '@/lib/api/lessons/mutations';
 import {
   LessonId,
   NewLessonParams,
@@ -13,19 +13,19 @@ import {
   lessonIdSchema,
   insertLessonParams,
   updateLessonParams,
-} from "@/lib/db/schema/lessons";
+} from '@/lib/db/schema/lessons';
 
 const handleErrors = (e: unknown) => {
-  const errMsg = "Error, please try again.";
+  const errMsg = 'Error, please try again.';
   if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
-  if (e && typeof e === "object" && "error" in e) {
+  if (e && typeof e === 'object' && 'error' in e) {
     const errAsStr = e.error as string;
     return errAsStr.length > 0 ? errAsStr : errMsg;
   }
   return errMsg;
 };
 
-const revalidateLessons = () => revalidatePath("/lessons");
+const revalidateLessons = () => revalidatePath('/lessons');
 
 export const createLessonAction = async (input: NewLessonParams) => {
   try {

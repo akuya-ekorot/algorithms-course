@@ -1,13 +1,12 @@
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
 
-import { getCourseObjectiveById } from "@/lib/api/courseObjectives/queries";
-import { getCourses } from "@/lib/api/courses/queries";import OptimisticCourseObjective from "@/app/(app)/course-objectives/[courseObjectiveId]/OptimisticCourseObjective";
+import { getCourseObjectiveById } from '@/lib/api/courseObjectives/queries';
+import { getCourses } from '@/lib/api/courses/queries';
+import OptimisticCourseObjective from '@/app/(app)/course-objectives/[courseObjectiveId]/OptimisticCourseObjective';
 
-
-import { BackButton } from "@/components/shared/BackButton";
-import Loading from "@/app/loading";
-
+import { BackButton } from '@/components/shared/BackButton';
+import Loading from '@/app/loading';
 
 export const revalidate = 0;
 
@@ -16,7 +15,6 @@ export default async function CourseObjectivePage({
 }: {
   params: { courseObjectiveId: string };
 }) {
-
   return (
     <main className="overflow-auto">
       <CourseObjective id={params.courseObjectiveId} />
@@ -25,7 +23,6 @@ export default async function CourseObjectivePage({
 }
 
 const CourseObjective = async ({ id }: { id: string }) => {
-  
   const { courseObjective } = await getCourseObjectiveById(id);
   const { courses } = await getCourses();
 
@@ -34,7 +31,10 @@ const CourseObjective = async ({ id }: { id: string }) => {
     <Suspense fallback={<Loading />}>
       <div className="relative">
         <BackButton currentResource="course-objectives" />
-        <OptimisticCourseObjective courseObjective={courseObjective} courses={courses} />
+        <OptimisticCourseObjective
+          courseObjective={courseObjective}
+          courses={courses}
+        />
       </div>
     </Suspense>
   );

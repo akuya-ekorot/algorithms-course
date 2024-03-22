@@ -1,9 +1,9 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import Loading from "@/app/loading";
-import ChapterList from "@/components/chapters/ChapterList";
-import { getChapters } from "@/lib/api/chapters/queries";
-import { getLessons } from "@/lib/api/lessons/queries";
+import Loading from '@/app/loading';
+import ChapterList from '@/components/chapters/ChapterList';
+import { getChapters } from '@/lib/api/chapters/queries';
+import { getLessons } from '@/lib/api/lessons/queries';
 
 export const revalidate = 0;
 
@@ -21,7 +21,6 @@ export default async function ChaptersPage() {
 }
 
 const Chapters = async () => {
-  
   const { chapters } = await getChapters();
   const { lessons } = await getLessons();
   return (

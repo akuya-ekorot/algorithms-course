@@ -1,13 +1,12 @@
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
 
-import { getLessonReferenceById } from "@/lib/api/lessonReferences/queries";
-import { getLessons } from "@/lib/api/lessons/queries";import OptimisticLessonReference from "@/app/(app)/lesson-references/[lessonReferenceId]/OptimisticLessonReference";
+import { getLessonReferenceById } from '@/lib/api/lessonReferences/queries';
+import { getLessons } from '@/lib/api/lessons/queries';
+import OptimisticLessonReference from '@/app/(app)/lesson-references/[lessonReferenceId]/OptimisticLessonReference';
 
-
-import { BackButton } from "@/components/shared/BackButton";
-import Loading from "@/app/loading";
-
+import { BackButton } from '@/components/shared/BackButton';
+import Loading from '@/app/loading';
 
 export const revalidate = 0;
 
@@ -16,7 +15,6 @@ export default async function LessonReferencePage({
 }: {
   params: { lessonReferenceId: string };
 }) {
-
   return (
     <main className="overflow-auto">
       <LessonReference id={params.lessonReferenceId} />
@@ -25,7 +23,6 @@ export default async function LessonReferencePage({
 }
 
 const LessonReference = async ({ id }: { id: string }) => {
-  
   const { lessonReference } = await getLessonReferenceById(id);
   const { lessons } = await getLessons();
 
@@ -34,7 +31,10 @@ const LessonReference = async ({ id }: { id: string }) => {
     <Suspense fallback={<Loading />}>
       <div className="relative">
         <BackButton currentResource="lesson-references" />
-        <OptimisticLessonReference lessonReference={lessonReference} lessons={lessons} />
+        <OptimisticLessonReference
+          lessonReference={lessonReference}
+          lessons={lessons}
+        />
       </div>
     </Suspense>
   );

@@ -1,9 +1,8 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import Loading from "@/app/loading";
-import CourseList from "@/components/courses/CourseList";
-import { getCourses } from "@/lib/api/courses/queries";
-
+import Loading from '@/app/loading';
+import CourseList from '@/components/courses/CourseList';
+import { getCourses } from '@/lib/api/courses/queries';
 
 export const revalidate = 0;
 
@@ -21,12 +20,11 @@ export default async function CoursesPage() {
 }
 
 const Courses = async () => {
-  
   const { courses } = await getCourses();
-  
+
   return (
     <Suspense fallback={<Loading />}>
-      <CourseList courses={courses}  />
+      <CourseList courses={courses} />
     </Suspense>
   );
 };

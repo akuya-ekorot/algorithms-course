@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from 'next/cache';
 import {
   createChapter,
   deleteChapter,
   updateChapter,
-} from "@/lib/api/chapters/mutations";
+} from '@/lib/api/chapters/mutations';
 import {
   ChapterId,
   NewChapterParams,
@@ -13,19 +13,19 @@ import {
   chapterIdSchema,
   insertChapterParams,
   updateChapterParams,
-} from "@/lib/db/schema/chapters";
+} from '@/lib/db/schema/chapters';
 
 const handleErrors = (e: unknown) => {
-  const errMsg = "Error, please try again.";
+  const errMsg = 'Error, please try again.';
   if (e instanceof Error) return e.message.length > 0 ? e.message : errMsg;
-  if (e && typeof e === "object" && "error" in e) {
+  if (e && typeof e === 'object' && 'error' in e) {
     const errAsStr = e.error as string;
     return errAsStr.length > 0 ? errAsStr : errMsg;
   }
   return errMsg;
 };
 
-const revalidateChapters = () => revalidatePath("/chapters");
+const revalidateChapters = () => revalidatePath('/chapters');
 
 export const createChapterAction = async (input: NewChapterParams) => {
   try {

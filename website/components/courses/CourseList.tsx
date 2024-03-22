@@ -1,31 +1,23 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { cn } from "@/lib/utils";
-import { type Course, CompleteCourse } from "@/lib/db/schema/courses";
-import Modal from "@/components/shared/Modal";
+import { cn } from '@/lib/utils';
+import { type Course, CompleteCourse } from '@/lib/db/schema/courses';
+import Modal from '@/components/shared/Modal';
 
-import { useOptimisticCourses } from "@/app/(app)/courses/useOptimisticCourses";
-import { Button } from "@/components/ui/button";
-import CourseForm from "./CourseForm";
-import { PlusIcon } from "lucide-react";
+import { useOptimisticCourses } from '@/app/(app)/courses/useOptimisticCourses';
+import { Button } from '@/components/ui/button';
+import CourseForm from './CourseForm';
+import { PlusIcon } from 'lucide-react';
 
 type TOpenModal = (course?: Course) => void;
 
-export default function CourseList({
-  courses,
-   
-}: {
-  courses: CompleteCourse[];
-   
-}) {
-  const { optimisticCourses, addOptimisticCourse } = useOptimisticCourses(
-    courses,
-     
-  );
+export default function CourseList({ courses }: { courses: CompleteCourse[] }) {
+  const { optimisticCourses, addOptimisticCourse } =
+    useOptimisticCourses(courses);
   const [open, setOpen] = useState(false);
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
   const openModal = (course?: Course) => {
@@ -39,18 +31,17 @@ export default function CourseList({
       <Modal
         open={open}
         setOpen={setOpen}
-        title={activeCourse ? "Edit Course" : "Create Course"}
+        title={activeCourse ? 'Edit Course' : 'Create Course'}
       >
         <CourseForm
           course={activeCourse}
           addOptimistic={addOptimisticCourse}
           openModal={openModal}
           closeModal={closeModal}
-          
         />
       </Modal>
       <div className="absolute right-0 top-0 ">
-        <Button onClick={() => openModal()} variant={"outline"}>
+        <Button onClick={() => openModal()} variant={'outline'}>
           +
         </Button>
       </div>
@@ -59,11 +50,7 @@ export default function CourseList({
       ) : (
         <ul>
           {optimisticCourses.map((course) => (
-            <Course
-              course={course}
-              key={course.id}
-              openModal={openModal}
-            />
+            <Course course={course} key={course.id} openModal={openModal} />
           ))}
         </ul>
       )}
@@ -78,30 +65,27 @@ const Course = ({
   course: CompleteCourse;
   openModal: TOpenModal;
 }) => {
-  const optimistic = course.id === "optimistic";
-  const deleting = course.id === "delete";
+  const optimistic = course.id === 'optimistic';
+  const deleting = course.id === 'delete';
   const mutating = optimistic || deleting;
   const pathname = usePathname();
-  const basePath = pathname.includes("courses")
+  const basePath = pathname.includes('courses')
     ? pathname
-    : pathname + "/courses/";
-
+    : pathname + '/courses/';
 
   return (
     <li
       className={cn(
-        "flex justify-between my-2",
-        mutating ? "opacity-30 animate-pulse" : "",
-        deleting ? "text-destructive" : "",
+        'flex justify-between my-2',
+        mutating ? 'opacity-30 animate-pulse' : '',
+        deleting ? 'text-destructive' : '',
       )}
     >
       <div className="w-full">
         <div>{course.title}</div>
       </div>
-      <Button variant={"link"} asChild>
-        <Link href={ basePath + "/" + course.id }>
-          Edit
-        </Link>
+      <Button variant={'link'} asChild>
+        <Link href={basePath + '/' + course.id}>Edit</Link>
       </Button>
     </li>
   );
@@ -118,7 +102,8 @@ const EmptyState = ({ openModal }: { openModal: TOpenModal }) => {
       </p>
       <div className="mt-6">
         <Button onClick={() => openModal()}>
-          <PlusIcon className="h-4" /> New Courses </Button>
+          <PlusIcon className="h-4" /> New Courses{' '}
+        </Button>
       </div>
     </div>
   );

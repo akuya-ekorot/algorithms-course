@@ -1,25 +1,25 @@
-import { sql } from "drizzle-orm";
-import { text, varchar, timestamp, pgTable } from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod";
-import { lessons } from "./lessons";
-import { type getLessonReferences } from "@/lib/api/lessonReferences/queries";
+import { sql } from 'drizzle-orm';
+import { text, varchar, timestamp, pgTable } from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
+import { lessons } from './lessons';
+import { type getLessonReferences } from '@/lib/api/lessonReferences/queries';
 
-import { nanoid, timestamps } from "@/lib/utils";
+import { nanoid, timestamps } from '@/lib/utils';
 
-export const lessonReferences = pgTable("lesson_references", {
-  id: varchar("id", { length: 191 })
+export const lessonReferences = pgTable('lesson_references', {
+  id: varchar('id', { length: 191 })
     .primaryKey()
     .$defaultFn(() => nanoid()),
-  title: text("title").notNull(),
-  link: text("link"),
-  lessonId: varchar("lesson_id", { length: 256 })
-    .references(() => lessons.id, { onDelete: "cascade" })
+  title: text('title').notNull(),
+  link: text('link'),
+  lessonId: varchar('lesson_id', { length: 256 })
+    .references(() => lessons.id, { onDelete: 'cascade' })
     .notNull(),
-  createdAt: timestamp("created_at")
+  createdAt: timestamp('created_at')
     .notNull()
     .default(sql`now()`),
-  updatedAt: timestamp("updated_at")
+  updatedAt: timestamp('updated_at')
     .notNull()
     .default(sql`now()`),
 });
@@ -52,9 +52,9 @@ export type NewLessonReferenceParams = z.infer<
 export type UpdateLessonReferenceParams = z.infer<
   typeof updateLessonReferenceParams
 >;
-export type LessonReferenceId = z.infer<typeof lessonReferenceIdSchema>["id"];
+export type LessonReferenceId = z.infer<typeof lessonReferenceIdSchema>['id'];
 
 // this type infers the return from getLessonReferences() - meaning it will include any joins
 export type CompleteLessonReference = Awaited<
   ReturnType<typeof getLessonReferences>
->["lessonReferences"][number];
+>['lessonReferences'][number];
