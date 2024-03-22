@@ -61,14 +61,29 @@ export const getLessonByIdWithLessonObjectivesAndLessonReferencesAndChapters =
 
     const lo = rows
       .filter((r) => r.lessonObjective !== null)
+      .filter(
+        (r, i, a) =>
+          a.findIndex(
+            (t) => t.lessonObjective!.id === r.lessonObjective!.id,
+          ) === i,
+      )
       .map((l) => l.lessonObjective) as CompleteLessonObjective[];
 
     const lr = rows
       .filter((r) => r.lessonReference !== null)
+      .filter(
+        (r, i, a) =>
+          a.findIndex(
+            (t) => t.lessonReference!.id === r.lessonReference!.id,
+          ) === i,
+      )
       .map((l) => l.lessonReference) as CompleteLessonReference[];
 
     const lc = rows
       .filter((r) => r.chapter !== null)
+      .filter(
+        (r, i, a) => a.findIndex((t) => t.chapter!.id === r.chapter!.id) === i,
+      )
       .map((c) => c.chapter) as CompleteChapter[];
 
     return {
