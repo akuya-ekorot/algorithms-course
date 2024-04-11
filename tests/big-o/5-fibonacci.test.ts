@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import fibonacci from "../../lessons/big-o/5-fibonacci";
 
-describe("fibonacci", () => {
+describe("fibonacci starting at 1", () => {
   test("returns 1st fibonacci number", () => {
     expect(fibonacci(1)).toBe(1);
   });
