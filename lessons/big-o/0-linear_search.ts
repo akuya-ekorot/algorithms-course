@@ -6,6 +6,7 @@
  * @param needle Number to look for
  *
  * @returns index of needle in hayStack, -1 otherwise
+ * @complexity O(n)
  */
 export default function linearSearch(hayStack: number[], needle: number) {
   for (let i = 0; i < hayStack.length; i++) {
