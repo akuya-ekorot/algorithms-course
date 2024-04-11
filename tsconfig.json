@@ -22,9 +22,9 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
 
     // Global types
-    typeRoots: ["./node_modules/@types/", "./types"]
+    "typeRoots": ["./node_modules/@types/", "./types"]
   }
 }
